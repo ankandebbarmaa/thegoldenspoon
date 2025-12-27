@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Golden Spoon | Authentic Indian Fine Dining</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary-color: #0a231a; /* Deep Green */
+            --secondary-color: #c5a35b; /* Gold Accent */
+            --text-light: #fffaf0; /* Cream/Off-white */
+            --text-dark: #2c2c2c;
+            --bg-light: #f8f5f0;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Lato', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+        body { font-family: var(--font-body); line-height: 1.6; color: var(--text-dark); background-color: var(--bg-light); }
+        h1, h2, h3, h4, h5 { font-family: var(--font-heading); color: var(--primary-color); }
+        a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+        
+        /* Utility Classes */
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        .section-padding { padding: 80px 0; }
+        .text-center { text-align: center; }
+        .required-star { color: red; margin-left: 3px; }
+        
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid var(--secondary-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative; z-index: 10;
+        }
+        .btn:hover { background-color: transparent; color: var(--secondary-color); }
+        
+        .btn-outline { background-color: transparent; color: var(--secondary-color); border: 2px solid var(--secondary-color); position: relative; z-index: 10;}
+        .btn-outline:hover { background-color: var(--secondary-color); color: var(--primary-color); }
+
+        /* --- SCROLL ANIMATION CLASSES --- */
+        .animate-block { opacity: 0; filter: blur(5px); transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .from-bottom { transform: translateY(60px); }
+        .from-left { transform: translateX(-60px); }
+        .from-right { transform: translateX(60px); }
+        .fade-in { transform: scale(0.95); }
+        .animate-block.show { opacity: 1; filter: blur(0); transform: translate(0) scale(1); }
+        .delay-1 { transition-delay: 0.2s; }
+        .delay-2 { transition-delay: 0.4s; }
+        .delay-3 { transition-delay: 0.6s; }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 5%; background-color: rgba(10, 35, 26, 0.95);
+            backdrop-filter: blur(10px); color: var(--text-light);
+            position: fixed; width: 100%; top: 0; z-index: 1000; 
+            box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+            transition: padding 0.3s ease;
+        }
+        .navbar.scrolled { padding: 10px 5%; }
+        .logo { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--secondary-color); }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a:hover { color: var(--secondary-color); }
+        .hamburger { display: none; cursor: pointer; }
+        .bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--text-light); transition: all 0.3s ease; }
+
+        /* --- HERO SECTION (STATIC IMAGE) --- */
+        #hero {
+            height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; color: var(--text-light); margin-top: 0;
+            background: linear-gradient(rgba(10, 35, 26, 0.8), rgba(10, 35, 26, 0.8)), url('https://images.unsplash.com/photo-1585937421612-70a008356fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=2036&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-content h1 { font-size: 4.5rem; color: var(--secondary-color); margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
+        .hero-content p { font-size: 1.3rem; margin-bottom: 50px; max-width: 700px; margin-left: auto; margin-right: auto; text-shadow: 1px 1px 5px rgba(0,0,0,0.8);}
+
+        /* --- ABOUT SECTION --- */
+        #about { background-color: var(--text-light); overflow: hidden; }
+        .about-flex { display: flex; align-items: center; gap: 60px; }
+        .about-img { flex: 1; position: relative; }
+        .about-img::before { content: ''; position: absolute; width: 100%; height: 100%; border: 3px solid var(--secondary-color); top: 20px; left: -20px; z-index: 0; transition: all 0.5s ease;}
+        .about-img:hover::before { top: 10px; left: -10px; }
+        .about-img img { border-radius: 4px; box-shadow: 10px 10px 30px rgba(0,0,0,0.2); position: relative; z-index: 1; }
+        .about-text { flex: 1; }
+        .section-title { font-size: 2.5rem; margin-bottom: 30px; position: relative; display: inline-block; }
+        .section-title::after { content: ''; display: block; width: 60px; height: 3px; background-color: var(--secondary-color); margin-top: 15px; transition: width 0.3s;}
+        .text-center .section-title::after { margin: 15px auto 0; }
+        .animate-block.show .section-title::after { width: 100%; }
+
+        /* --- MENU SECTION --- */
+        #menu-highlights { background-color: var(--primary-color); color: var(--text-light); }
+        #menu-highlights h2 { color: var(--secondary-color); }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; margin-top: 60px; }
+        .menu-item { background-color: rgba(255,255,255,0.04); padding: 30px; border-radius: 8px; border: 1px solid rgba(197, 163, 91, 0.2); transition: all 0.4s ease; }
+        .menu-item:hover { transform: translateY(-10px); border-color: var(--secondary-color); background-color: rgba(255,255,255,0.08); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+        .menu-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px dotted rgba(197, 163, 91, 0.5); padding-bottom: 15px; align-items: flex-end;}
+        .menu-header h3 { color: var(--secondary-color); font-size: 1.4rem; margin-bottom: 0;}
+        .price { font-weight: 700; color: var(--secondary-color); font-family: var(--font-heading); font-size: 1.2rem; }
+        .menu-item p { opacity: 0.9; font-size: 1rem; }
+
+        /* --- BOOKING SECTION --- */
+        #booking { background-color: var(--bg-light); position: relative; }
+        .booking-container { max-width: 800px; margin: 0 auto; background: #fff; padding: 50px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); border-top: 5px solid var(--secondary-color); border-radius: 12px; position: relative; z-index: 2;}
+        .booking-form { display: flex; flex-direction: column; gap: 25px; }
+        .form-row { display: flex; gap: 25px; }
+        .form-group { flex: 1; display: flex; flex-direction: column; }
+        label { font-weight: 700; margin-bottom: 10px; color: var(--primary-color); font-size: 0.95rem; letter-spacing: 0.5px; }
+        input, select, textarea { padding: 15px; border: 2px solid #e0e0e0; border-radius: 6px; font-family: var(--font-body); font-size: 1rem; transition: all 0.3s; background: #fdfdfd; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary-color); background: #fff; box-shadow: 0 5px 15px rgba(197, 163, 91, 0.1); }
+        .time-selection-container { display: flex; flex-wrap: wrap; gap: 12px; }
+        .time-radio { display: none; }
+        .time-label { padding: 12px 20px; background-color: #f0f0f0; border: 2px solid transparent; border-radius: 30px; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; font-weight: 600; color: var(--text-dark); }
+        .time-radio:checked + .time-label { background-color: var(--secondary-color); color: var(--primary-color); border-color: var(--secondary-color); box-shadow: 0 5px 15px rgba(197, 163, 91, 0.3); transform: translateY(-2px); }
+        .time-label:hover { background-color: #e0e0e0; }
+        #form-feedback { display: none; text-align: center; padding: 40px; background-color: rgba(197, 163, 91, 0.1); border: 2px solid var(--secondary-color); border-radius: 8px; margin-top: 20px; animation: fadeIn 0.5s ease;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .success-icon { color: var(--secondary-color); font-size: 3rem; margin-bottom: 20px; }
+
+        /* --- FOOTER --- */
+        footer { background-color: var(--primary-color); color: var(--text-light); padding: 80px 0 30px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 50px; margin-bottom: 60px; }
+        .footer-col h4 { color: var(--secondary-color); margin-bottom: 25px; font-size: 1.3rem; letter-spacing: 1px; }
+        .footer-col p, .footer-col li { margin-bottom: 15px; opacity: 0.8; transition: opacity 0.3s; }
+        .footer-col li:hover { opacity: 1; }
+        .footer-col a:hover { color: var(--secondary-color); }
+        .social-links { display: flex; gap: 15px; }
+        .social-links a { display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; background-color: rgba(255,255,255,0.05); border-radius: 50%; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(255,255,255,0.1); }
+        .social-links a:hover { background-color: var(--secondary-color); color: var(--primary-color); transform: translateY(-5px) scale(1.1); border-color: var(--secondary-color); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); opacity: 0.7; font-size: 0.9rem; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 3rem; }
+            .hamburger { display: block; }
+            .hamburger.active .bar:nth-child(2) { opacity: 0; }
+            .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+            .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+            .nav-links { position: fixed; left: -100%; top: 70px; gap: 0; flex-direction: column; background-color: var(--primary-color); width: 100%; text-align: center; transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1); padding: 40px 0; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+            .nav-links-item { margin: 20px 0; width: 100%; font-size: 1.2rem; }
+            .nav-links.active { left: 0; }
+            .about-flex, .form-row { flex-direction: column; gap: 40px; }
+            .booking-container { padding: 30px 20px; }
+            .from-left, .from-right { transform: translateY(30px); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="logo">The Golden Spoon</a>
+        <ul class="nav-links">
+            <li class="nav-links-item"><a href="#hero">Home</a></li>
+            <li class="nav-links-item"><a href="#about">About</a></li>
+            <li class="nav-links-item"><a href="#menu-highlights">Menu</a></li>
+            <li class="nav-links-item"><a href="#booking" class="btn" style="padding: 8px 20px;">Book Table</a></li>
+        </ul>
+        <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+
+    <section id="hero">
+        <div class="hero-content container">
+            <h1 class="animate-block from-bottom">Royal Indian Flavors</h1>
+            <p class="animate-block from-bottom delay-1">Experience the authentic taste of India, where traditional spices meet modern culinary art. A dining experience fit for royalty.</p>
+            <div class="animate-block from-bottom delay-2">
+                <a href="#menu-highlights" class="btn">Explore Our Menu</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section-padding">
+        <div class="container about-flex">
+            <div class="about-img animate-block from-left">
+                <img src="https://images.unsplash.com/photo-1552590635-27c2c2128abf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Indian Spices and Cooking">
+            </div>
+            <div class="about-text animate-block from-right">
+                <h2 class="section-title">Our Heritage</h2>
+                <p>The Golden Spoon brings the vibrant soul of Indian cuisine to your plate. Our recipes have been passed down through generations, perfected by our master chefs from Old Delhi to Kerala.</p>
+                <br>
+                <p>We use locally sourced ingredients blended with imported authentic spices to create rich curries, tandoori specialties, and delicate biryanis. We believe in "Atithi Devo Bhava" - The guest is equivalent to God.</p>
+                <br>
+                <a href="#booking" class="btn">Reserve a Table</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="menu-highlights" class="section-padding">
+        <div class="container">
+            <div class="text-center animate-block from-bottom">
+                <h2 class="section-title">Signature Indian Dishes</h2>
+                <p style="opacity: 0.8;">A journey through India's culinary landscape.</p>
+            </div>
+
+            <div class="menu-grid">
+                <div class="menu-item animate-block fade-in">
+                    <div class="menu-header">
+                        <h3>Butter Chicken (Murgh Makhani)</h3>
+                        <span class="price">₹550</span>
+                    </div>
+                    <p>Tandoor-grilled chicken chunks simmered in a smooth, satin-textured tomato and cream gravy, flavored with fenugreek.</p>
+                </div>
+                <div class="menu-item animate-block fade-in delay-1">
+                    <div class="menu-header">
+                        <h3>Lamb Rogan Josh</h3>
+                        <span class="price">₹650</span>
+                    </div>
+                    <p>An aromatic Kashmiri dish of slow-cooked lamb with intense spices, yogurt, and a brilliant red chili color.</p>
+                </div>
+                 <div class="menu-item animate-block fade-in delay-2">
+                    <div class="menu-header">
+                        <h3>Paneer Tikka Masala (V)</h3>
+                        <span class="price">₹450</span>
+                    </div>
+                    <p>Marinated cottage cheese cubes grilled in a tandoor and served in a spiced, rich onion-tomato gravy.</p>
+                </div>
+                <div class="menu-item animate-block fade-in">
+                    <div class="menu-header">
+                        <h3>Hyderabadi Chicken Biryani</h3>
+                        <span class="price">₹600</span>
+                    </div>
+                    <p>A fragrant layered rice dish cooked on 'dum' with aromatic spices, saffron, and marinated chicken.</p>
+                </div>
+                <div class="menu-item animate-block fade-in delay-1">
+                    <div class="menu-header">
+                        <h3>Dal Makhani (V)</h3>
+                        <span class="price">₹400</span>
+                    </div>
+                    <p>Whole black lentils and red kidney beans slow-cooked overnight with butter and cream. A North Indian staple.</p>
+                </div>
+                 <div class="menu-item animate-block fade-in delay-2">
+                    <div class="menu-header">
+                        <h3>Garlic Naan Basket</h3>
+                        <span class="price">₹250</span>
+                    </div>
+                    <p>Assortment of freshly baked tandoori flatbreads topped with roasted garlic and cilantro butter.</p>
+                </div>
+            </div>
+            
+            <div class="text-center animate-block from-bottom delay-3" style="margin-top: 50px;">
+                <a href="https://example.com/menu.pdf" target="_blank" class="btn btn-outline">Explore Our Full Menu</a>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="booking" class="section-padding">
+        <div class="container">
+            <div class="text-center animate-block from-bottom">
+                <h2 class="section-title">Reservations</h2>
+                <p class="text-dark" style="margin-bottom: 40px;">Book your table for an unforgettable experience.</p>
+            </div>
+            
+            <div class="booking-container animate-block fade-in delay-1">
+                <form id="booking-form-ajax" class="booking-form" method="POST">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Full Name <span class="required-star">*</span></label>
+                            <input type="text" id="name" name="name" required placeholder="Enter Full Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address <span class="required-star">*</span></label>
+                            <input type="email" id="email" name="_replyto" required placeholder="Enter Email Address">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                         <label for="phone">Phone Number <span class="required-star">*</span></label>
+                         <input type="tel" id="phone" name="phone" required placeholder="Enter Phone Number">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="guests">Number of Guests <span class="required-star">*</span></label>
+                            <input type="number" id="guests" name="guests" min="1" max="20" required>
+                        </div>
+                        <div class="form-group">
+                             <label for="date">Date <span class="required-star">*</span></label>
+                             <input type="date" id="date" name="date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Preferred Time <span class="required-star">*</span></label>
+                        <div class="time-selection-container">
+                            <input type="radio" id="t1" name="time" value="18:00" class="time-radio" required>
+                            <label for="t1" class="time-label">6:00 PM</label>
+
+                            <input type="radio" id="t2" name="time" value="18:30" class="time-radio">
+                            <label for="t2" class="time-label">6:30 PM</label>
+
+                            <input type="radio" id="t3" name="time" value="19:00" class="time-radio">
+                            <label for="t3" class="time-label">7:00 PM</label>
+                            
+                            <input type="radio" id="t4" name="time" value="19:30" class="time-radio">
+                            <label for="t4" class="time-label">7:30 PM</label>
+
+                            <input type="radio" id="t5" name="time" value="20:00" class="time-radio">
+                            <label for="t5" class="time-label">8:00 PM</label>
+
+                            <input type="radio" id="t6" name="time" value="20:30" class="time-radio">
+                            <label for="t6" class="time-label">8:30 PM</label>
+                            
+                            <input type="radio" id="t7" name="time" value="21:00" class="time-radio">
+                            <label for="t7" class="time-label">9:00 PM</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Special Requests (Optional)</label>
+                        <textarea id="message" name="message" rows="3" placeholder="Enter any special requests..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%; border: none; margin-top: 10px;">Request Booking</button>
+                </form>
+
+                <div id="form-feedback">
+                    <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                    <h3>Request Received!</h3>
+                    <p>Thank you for choosing The Golden Spoon. We have received your booking request and will confirm via email or phone shortly.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col animate-block from-bottom">
+                    <h4>The Golden Spoon</h4>
+                    <p>Authentic Indian fine dining experience delivering the true taste of royalty to your plate.</p>
+                </div>
+                <div class="footer-col animate-block from-bottom delay-1">
+                    <h4>Contact Us</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt" style="margin-right: 10px; color: var(--secondary-color);"></i> This is our demo project</li>
+                        <li><i class="fas fa-phone-alt" style="margin-right: 10px; color: var(--secondary-color);"></i> +91 9236 9273</li>
+                        <li><i class="fas fa-envelope" style="margin-right: 10px; color: var(--secondary-color);"></i> mewcinbusiness@gmail.com</li>
+                    </ul>
+                </div>
+                <div class="footer-col animate-block from-bottom delay-2">
+                    <h4>Opening Hours</h4>
+                    <p>Mon - Sun: 12:00 PM - 11:00 PM</p>
+                    
+                    <h4 style="margin-top: 25px;">Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom animate-block fade-in delay-3">
+                <p>&copy; 2026 The Golden Spoon Restaurant. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Mobile Navigation Toggle ---
+        const hamburger = document.querySelector(".hamburger");
+        const navLinks = document.querySelector(".nav-links");
+        const navLinksItems = document.querySelectorAll(".nav-links-item");
+
+        hamburger.addEventListener("click", () => {
+            hamburger.classList.toggle("active");
+            navLinks.classList.toggle("active");
+        });
+
+        navLinksItems.forEach(item => {
+            item.addEventListener("click", () => {
+                hamburger.classList.remove("active");
+                navLinks.classList.remove("active");
+            });
+        });
+
+        // --- NAVBAR SCROLL EFFECT ---
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+
+        // --- SCROLL ANIMATIONS (Intersection Observer) ---
+        const observerOptions = {
+            root: null, threshold: 0.2, rootMargin: "0px"
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        const animatedElements = document.querySelectorAll('.animate-block');
+        animatedElements.forEach(el => {
+            observer.observe(el);
+        });
+
+
+        // --- AJAX FORM SUBMISSION ---
+        const form = document.getElementById("booking-form-ajax");
+        const feedback = document.getElementById("form-feedback");
+
+        // >>>>> IMPORTANT: REPLACE THIS URL WITH YOUR OWN FORMSPREE ENDPOINT <<<<<
+        // Example: 'https://formspree.io/f/your_form_id'
+        const formspreeEndpoint = 'https://formspree.io/f/movzjgge'; 
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const data = new FormData(event.target);
+            const submitBtn = form.querySelector('button[type="submit"]');
+            
+            submitBtn.innerHTML = "Sending Request...";
+            submitBtn.style.opacity = "0.7";
+            submitBtn.disabled = true;
+
+            fetch(formspreeEndpoint, {
+                method: 'POST', // FORCE POST METHOD HERE
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    form.style.display = "none";
+                    feedback.style.display = "block";
+                    feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    form.reset();
+                } else {
+                    response.json().then(data => {
+                        if (Object.hasOwn(data, 'errors')) {
+                            alert(data["errors"].map(error => error["message"]).join(", "));
+                        } else {
+                            alert("Oops! There was a problem submitting your form");
+                        }
+                    });
+                    resetButton();
+                }
+            }).catch(error => {
+                 alert("Oops! There was a problem submitting your form");
+                 resetButton();
+            });
+        }
+
+        function resetButton() {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = "Request Booking";
+            submitBtn.style.opacity = "1";
+            submitBtn.disabled = false;
+        }
+
+        form.addEventListener("submit", handleSubmit);
+    </script>
+
+</body>
+</html>
